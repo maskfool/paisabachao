@@ -1,9 +1,145 @@
-import { useRef, useEffect, useCallback, Suspense } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth, useSignIn } from "@clerk/clerk-react";
 import { Shield, Brain, Target, TrendingDown, MessageSquare, BarChart3, Loader2, ArrowRight, Lock, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// --- Pixel Coin that follows mouse like a pet ---
+
+const PIXEL_COIN_SVG = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <rect x="10" y="2" width="12" height="2" fill="#FFD700"/>
+  <rect x="8" y="4" width="2" height="2" fill="#FFD700"/>
+  <rect x="22" y="4" width="2" height="2" fill="#FFD700"/>
+  <rect x="6" y="6" width="2" height="2" fill="#FFD700"/>
+  <rect x="24" y="6" width="2" height="2" fill="#FFD700"/>
+  <rect x="4" y="8" width="2" height="2" fill="#FFD700"/>
+  <rect x="26" y="8" width="2" height="2" fill="#FFD700"/>
+  <rect x="4" y="10" width="2" height="2" fill="#FFD700"/>
+  <rect x="26" y="10" width="2" height="2" fill="#FFD700"/>
+  <rect x="2" y="12" width="2" height="8" fill="#FFD700"/>
+  <rect x="28" y="12" width="2" height="8" fill="#FFD700"/>
+  <rect x="4" y="20" width="2" height="2" fill="#DAA520"/>
+  <rect x="26" y="20" width="2" height="2" fill="#DAA520"/>
+  <rect x="4" y="22" width="2" height="2" fill="#DAA520"/>
+  <rect x="26" y="22" width="2" height="2" fill="#DAA520"/>
+  <rect x="6" y="24" width="2" height="2" fill="#DAA520"/>
+  <rect x="24" y="24" width="2" height="2" fill="#DAA520"/>
+  <rect x="8" y="26" width="2" height="2" fill="#DAA520"/>
+  <rect x="22" y="26" width="2" height="2" fill="#DAA520"/>
+  <rect x="10" y="28" width="12" height="2" fill="#DAA520"/>
+  <!-- Fill -->
+  <rect x="10" y="4" width="12" height="2" fill="#FFC107"/>
+  <rect x="8" y="6" width="16" height="2" fill="#FFC107"/>
+  <rect x="6" y="8" width="20" height="2" fill="#FFCA28"/>
+  <rect x="6" y="10" width="20" height="2" fill="#FFCA28"/>
+  <rect x="4" y="12" width="24" height="8" fill="#FFD54F"/>
+  <rect x="6" y="20" width="20" height="2" fill="#FFC107"/>
+  <rect x="6" y="22" width="20" height="2" fill="#FFB300"/>
+  <rect x="8" y="24" width="16" height="2" fill="#FFA000"/>
+  <rect x="10" y="26" width="12" height="2" fill="#FF8F00"/>
+  <!-- ₹ symbol -->
+  <rect x="11" y="10" width="10" height="2" fill="#B8860B"/>
+  <rect x="11" y="14" width="10" height="2" fill="#B8860B"/>
+  <rect x="12" y="12" width="2" height="2" fill="#B8860B"/>
+  <rect x="12" y="16" width="2" height="2" fill="#B8860B"/>
+  <rect x="14" y="18" width="2" height="2" fill="#B8860B"/>
+  <rect x="16" y="20" width="2" height="2" fill="#B8860B"/>
+  <rect x="18" y="18" width="2" height="2" fill="#B8860B"/>
+</svg>`)}`;
+
+function CoinFollower() {
+  const coinRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: -100, y: -100 });
+  const target = useRef({ x: -100, y: -100 });
+  const velocity = useRef({ x: 0, y: 0 });
+  const rotation = useRef(0);
+  const frameRef = useRef<number>(0);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    // Don't show on touch devices
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    const onMove = (e: MouseEvent) => {
+      target.current = { x: e.clientX, y: e.clientY };
+      if (!visible) setVisible(true);
+    };
+    const onLeave = () => setVisible(false);
+    const onEnter = () => setVisible(true);
+
+    window.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseleave", onLeave);
+    document.addEventListener("mouseenter", onEnter);
+
+    // Smooth follow animation loop
+    const animate = () => {
+      const dx = target.current.x - pos.current.x;
+      const dy = target.current.y - pos.current.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Smooth easing — like a pet trotting after you
+      const ease = 0.08;
+      velocity.current.x += dx * ease;
+      velocity.current.y += dy * ease;
+      velocity.current.x *= 0.75; // friction
+      velocity.current.y *= 0.75;
+
+      pos.current.x += velocity.current.x;
+      pos.current.y += velocity.current.y;
+
+      // Roll rotation based on horizontal movement
+      rotation.current += velocity.current.x * 2;
+
+      // Slight bounce when close to target
+      const bounce = dist < 5 ? Math.sin(Date.now() * 0.003) * 2 : 0;
+
+      if (coinRef.current) {
+        coinRef.current.style.transform = `translate3d(${pos.current.x - 20}px, ${pos.current.y - 20 + bounce}px, 0) rotateY(${rotation.current}deg)`;
+        coinRef.current.style.opacity = visible ? "1" : "0";
+      }
+
+      frameRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(frameRef.current);
+      window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("mouseenter", onEnter);
+    };
+  }, [visible]);
+
+  // Hidden on touch devices
+  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return null;
+
+  return (
+    <div
+      ref={coinRef}
+      className="fixed top-0 left-0 z-50 pointer-events-none"
+      style={{
+        width: 40,
+        height: 40,
+        opacity: 0,
+        transition: "opacity 0.3s",
+        perspective: "600px",
+        transformStyle: "preserve-3d",
+        filter: "drop-shadow(0 4px 8px rgba(255, 193, 7, 0.4))",
+      }}
+    >
+      <img
+        src={PIXEL_COIN_SVG}
+        alt=""
+        width={40}
+        height={40}
+        style={{ imageRendering: "pixelated", display: "block" }}
+        draggable={false}
+      />
+    </div>
+  );
+}
 
 // --- Canvas Particle + Floating Shapes Animation ---
 
@@ -208,6 +344,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
+      <CoinFollower />
       {/* ===== HERO ===== */}
       <motion.div ref={heroRef} style={{ opacity: heroOpacity, scale: heroScale }} className="relative min-h-screen flex flex-col">
         {/* Canvas Animation Background */}
@@ -256,13 +393,13 @@ export default function Landing() {
               </div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
-                Your money,
+                Stop <span className="text-gradient">Overspending.</span>
                 <br />
-                <span className="text-gradient">your rules.</span>
+                Start <span className="text-gradient">Building Wealth.</span>
               </h1>
 
               <p className="text-base md:text-lg text-muted-foreground max-w-md mx-auto mb-10 leading-relaxed">
-                Track every rupee, set strict budgets, and get an AI advisor that won't sugarcoat your spending habits.
+                An AI finance advisor that won't sugarcoat it. Set goals, track every rupee, and get a strict YES or NO before every purchase.
               </p>
             </motion.div>
 
