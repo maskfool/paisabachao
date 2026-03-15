@@ -19,6 +19,8 @@ const Goals = lazy(() => import("./pages/Goals"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const SettingsPage = lazy(() => import("./pages/SettingsPage"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
+const EMILendings = lazy(() => import("./pages/EMILendings"));
+const CreditCards = lazy(() => import("./pages/CreditCards"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SSOCallback = lazy(() => import("./pages/SSOCallback"));
 
@@ -56,6 +58,8 @@ const App = () => (
               <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
               <Route path="/transactions" element={<ProtectedRoute fallback={<TransactionsSkeleton />}><Transactions /></ProtectedRoute>} />
               <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+              <Route path="/emi" element={<ProtectedRoute><EMILendings /></ProtectedRoute>} />
+              <Route path="/credit-cards" element={<ProtectedRoute><CreditCards /></ProtectedRoute>} />
               <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
               <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />

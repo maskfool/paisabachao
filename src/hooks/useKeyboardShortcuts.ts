@@ -44,8 +44,9 @@ export function useKeyboardShortcuts() {
           case "2": navigate("/chat"); break;
           case "3": navigate("/transactions"); break;
           case "4": navigate("/goals"); break;
-          case "5": navigate("/analytics"); break;
-          case "6": navigate("/settings"); break;
+          case "5": navigate("/emi"); break;
+          case "6": navigate("/analytics"); break;
+          case "7": navigate("/settings"); break;
         }
       }
     }

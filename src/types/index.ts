@@ -9,6 +9,11 @@ export interface Account {
   icon?: string;
   createdAt: Date;
   updatedAt: Date;
+  // Credit card specific (only when type === "credit_card")
+  creditLimit?: number;
+  billingDate?: number; // day of month (1-31) statement generates
+  dueDate?: number; // day of month payment is due (1-31)
+  minimumDuePercentage?: number; // e.g. 5 = 5% of outstanding
 }
 
 export interface Transaction {
@@ -77,6 +82,39 @@ export interface MonthlyIncome {
   createdAt: Date;
 }
 
+export interface EMI {
+  id?: number;
+  name: string;
+  type: "car" | "home" | "personal" | "electronics" | "consumer" | "education" | "two_wheeler" | "other";
+  lender: string;
+  totalAmount: number;
+  emiAmount: number;
+  interestRate: number;
+  tenureMonths: number;
+  paidCount: number;
+  startDate: Date;
+  dueDay: number; // 1-31, day of month EMI is due
+  currency: string;
+  status: "active" | "completed";
+  notes?: string;
+  creditCardAccountId?: number; // link EMI to a credit card
+  createdAt: Date;
+}
+
+export interface Lending {
+  id?: number;
+  type: "lent" | "borrowed";
+  personName: string;
+  amount: number;
+  remainingAmount: number;
+  description: string;
+  date: Date;
+  dueDate?: Date;
+  status: "pending" | "partial" | "settled";
+  currency: string;
+  createdAt: Date;
+}
+
 // ===== AI Action Types =====
 
 export type AIActionType =
@@ -117,6 +155,17 @@ export interface FinancialHealthScore {
   goalProgress: number;
   emergencyFund: number;
   spendingConsistency: number;
+}
+
+export interface CreditCardSummary extends Account {
+  outstanding: number;
+  availableLimit: number;
+  utilizationPercent: number;
+  minimumDue: number;
+  linkedEMIs: EMI[];
+  emiMonthlyTotal: number;
+  nextBillingDate: Date | null;
+  nextDueDate: Date | null;
 }
 
 export interface MonthlySnapshot {

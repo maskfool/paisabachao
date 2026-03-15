@@ -4,7 +4,7 @@ import { useUser, useClerk } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, MessageSquare, Receipt, Target, BarChart3, Settings,
-  Menu, X, LogOut, Moon, Sun, ChevronLeft
+  Menu, X, LogOut, Moon, Sun, ChevronLeft, CircleDollarSign, Wallet
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,8 @@ const NAV_ITEMS = [
   { path: "/chat", label: "AI Chat", icon: MessageSquare },
   { path: "/transactions", label: "Transactions", icon: Receipt },
   { path: "/goals", label: "Goals & Budgets", icon: Target },
+  { path: "/emi", label: "EMI & Lendings", icon: CircleDollarSign },
+  { path: "/credit-cards", label: "Credit Cards", icon: Wallet },
   { path: "/analytics", label: "Analytics", icon: BarChart3 },
   { path: "/settings", label: "Settings", icon: Settings },
 ];
