@@ -3,22 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SmartSpend AI - Stop Overspending, Start Building Wealth</title>
-    <meta name="description" content="AI-powered personal finance advisor that enforces your spending goals. Track expenses, set budgets, and get strict purchase advice." />
-    <meta name="author" content="SmartSpend" />
+    <title>PaisaBachao — AI-Powered Personal Finance Tracker</title>
+    <meta name="description" content="Privacy-first AI-powered personal finance tracker. Track expenses, set budgets, and get personalized financial advice — all data stays on your device." />
+    <meta name="author" content="PaisaBachao" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <meta property="og:title" content="SmartSpend AI - Personal Finance Advisor" />
-    <meta property="og:description" content="AI-powered finance app that says NO when spending hurts your goals" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/pwa-192x192.svg" />
+
+    <meta property="og:title" content="PaisaBachao — AI Finance Tracker" />
+    <meta property="og:description" content="Privacy-first AI-powered personal finance tracker" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>

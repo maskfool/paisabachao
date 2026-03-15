@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="28" fill="#0f172a"/>
+  <circle cx="96" cy="96" r="62" fill="url(#g)"/>
+  <defs><linearGradient id="g" x1="34" y1="34" x2="158" y2="158"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+  <text x="96" y="108" text-anchor="middle" fill="#fff" font-size="72" font-weight="bold" font-family="system-ui,sans-serif">₹</text>
+</svg>

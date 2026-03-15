@@ -554,37 +554,37 @@ src/
 
 ### Phase 1: Foundation & Core (Week 1-2)
 
-**Step 1: Database Layer**
-- [ ] Install Dexie.js (`bun add dexie`)
-- [ ] Create `src/lib/db.ts` with full schema
-- [ ] Create `src/types/index.ts` with all interfaces
-- [ ] Create all CRUD hooks (useAccounts, useTransactions, useGoals, useBudgets, useSettings)
-- [ ] Add seed data function for first-time users
+**Step 1: Database Layer** ✅ COMPLETED (2026-03-15)
+- [x] Install Dexie.js (`bun add dexie`) + dexie-react-hooks
+- [x] Create `src/lib/db.ts` with full schema (6 tables, indexes, seed function)
+- [x] Create `src/types/index.ts` with all interfaces (Account, Transaction, Goal, Budget, ChatMessage, UserSettings, AIAction, computed types)
+- [x] Create all CRUD hooks (useAccounts, useTransactions, useGoals, useBudgets, useSettings)
+- [x] Add seed data function for first-time users (3 accounts, 12 transactions, 4 goals, 8 budgets, default settings)
 - [ ] Test database operations
 
-**Step 2: Wire Up Pages**
-- [ ] Dashboard → real data from Dexie hooks
-- [ ] Transactions → real CRUD (add, edit, delete, search, filter)
-- [ ] Goals → real CRUD with progress calculation
-- [ ] Analytics → compute charts from transaction data
-- [ ] Settings → persist preferences
+**Step 2: Wire Up Pages** ✅ COMPLETED (2026-03-15)
+- [x] Dashboard → real data from Dexie hooks (balance, income/expenses, budget bars, goal cards, health score)
+- [x] Transactions → real CRUD (add via dialog, delete, search, filter by type) — edit not yet implemented
+- [x] Goals → real CRUD with progress calculation (add/delete goals, add/delete budgets, on-track detection)
+- [x] Analytics → compute charts from transaction data (pie chart, weekly line, health breakdown with radial charts)
+- [x] Settings → persist preferences (name, currency, API key, strictness, notifications, export/import JSON, clear data)
 
-**Step 3: AI Integration**
-- [ ] Install Anthropic SDK (`bun add @anthropic-ai/sdk`)
-- [ ] Create `src/lib/ai/client.ts` — Claude streaming client
-- [ ] Create `src/lib/ai/systemPrompt.ts` — strict advisor personality
-- [ ] Create `src/lib/ai/contextBuilder.ts` — dynamic financial snapshot
-- [ ] Create `src/lib/ai/actionParser.ts` — parse structured actions from responses
-- [ ] Create `src/lib/ai/actionExecutor.ts` — execute actions on Dexie DB
-- [ ] Rewrite `Chat.tsx` with full Claude integration
-- [ ] Chat history persistence in Dexie
-- [ ] Implement all chat templates
+**Step 3: AI Integration** ✅ COMPLETED (2026-03-15)
+- [x] Install Anthropic SDK (`bun add @anthropic-ai/sdk`)
+- [x] Create `src/lib/ai/client.ts` — Claude streaming client (dangerouslyAllowBrowser for BYOK)
+- [x] Create `src/lib/ai/systemPrompt.ts` — 3 strictness levels (strict/moderate/lenient)
+- [x] Create `src/lib/ai/contextBuilder.ts` — dynamic financial snapshot from all Dexie tables
+- [x] Create `src/lib/ai/actionParser.ts` — parse ```action blocks from AI responses
+- [x] Create `src/lib/ai/actionExecutor.ts` — execute add_transaction, update_goal, set_budget on Dexie
+- [x] Rewrite `Chat.tsx` with full Claude integration (streaming, sessions, error states)
+- [x] Chat history persistence in Dexie (useChat hook with session support)
+- [x] Implement all chat templates (10 templates: expense, income, investment, withdrawal, afford check, budget, goals, health, summary, advice)
 
-**Step 4: Financial Intelligence**
-- [ ] Implement health score algorithm in `useFinancialHealth.ts`
-- [ ] Budget auto-calculation (spent = sum of transactions in category this month)
-- [ ] Goal on-track/behind calculation
-- [ ] Dashboard health score widget
+**Step 4: Financial Intelligence** ✅ COMPLETED (2026-03-15)
+- [x] Implement health score algorithm in `useFinancialHealth.ts` (5 weighted components: savings rate 30%, budget adherence 25%, goal progress 25%, emergency fund 10%, spending consistency 10%)
+- [x] Budget auto-calculation (spent = sum of transactions in category this month, via useBudgets hook)
+- [x] Goal on-track/behind calculation (based on time elapsed vs progress, 15% grace margin)
+- [x] Dashboard health score widget (grade A+ to D, score out of 100)
 
 ### Phase 2: Product Ready (Week 3-4)
 
