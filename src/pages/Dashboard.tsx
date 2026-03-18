@@ -77,19 +77,18 @@ export default function Dashboard() {
 
   // Redirect to onboarding if not completed
   const settingsLoaded = Object.keys(settings).length > 0;
+  const hasUserData = !!(settings.name || settings.apiKey || settings.monthlyIncome || totalBalance > 0);
   useEffect(() => {
     if (!settingsLoaded) return;
     if (settings.onboardingComplete === "true") return;
-    // Existing users (have accounts but no onboardingComplete) — auto-mark complete
-    if (totalBalance > 0 && !settings.onboardingComplete) {
+    // Existing users who have any meaningful data — auto-mark complete
+    if (hasUserData) {
       setSetting("onboardingComplete", "true");
       return;
     }
-    // New user or reset user — redirect to onboarding
-    if (settings.onboardingComplete === "false" || !settings.onboardingComplete) {
-      navigate("/onboarding", { replace: true });
-    }
-  }, [settingsLoaded, settings.onboardingComplete, totalBalance, navigate, setSetting]);
+    // Truly new user — redirect to onboarding
+    navigate("/onboarding", { replace: true });
+  }, [settingsLoaded, settings.onboardingComplete, hasUserData, navigate, setSetting]);
 
   const userName = user?.firstName || settings.name || "there";
 

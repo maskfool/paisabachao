@@ -395,9 +395,15 @@ export default function EMILendings() {
                 const Icon = getEMIIcon(emi.type);
                 const pct = Math.round((emi.paidCount / emi.tenureMonths) * 100);
                 const remaining = emi.tenureMonths - emi.paidCount;
-                const today = new Date().getDate();
-                const isDueSoon = emi.dueDay - today <= 3 && emi.dueDay - today >= 0;
-                const isOverdue = today > emi.dueDay;
+                const now = new Date();
+                const today = now.getDate();
+                // Calculate expected paid count for this month
+                const startDate = new Date(emi.startDate);
+                const monthsElapsed = (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth());
+                const expectedPaid = today >= emi.dueDay ? monthsElapsed + 1 : monthsElapsed;
+                const paidThisMonth = emi.paidCount >= expectedPaid;
+                const isDueSoon = !paidThisMonth && emi.dueDay - today <= 3 && emi.dueDay - today >= 0;
+                const isOverdue = !paidThisMonth && today > emi.dueDay;
 
                 return (
                   <motion.div

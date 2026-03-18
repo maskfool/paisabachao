@@ -50,6 +50,36 @@ export async function sendMessage(
 
     const recentHistory = history.slice(-20);
 
+    // Load memory from previous sessions (last 10 messages from other sessions)
+    const allMessages = await db.chatMessages
+      .orderBy("timestamp")
+      .reverse()
+      .limit(200)
+      .toArray();
+
+    const prevSessionMessages = allMessages
+      .filter((m) => m.sessionId !== sessionId)
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+    // Group by session, take last 2 exchanges (4 messages) from up to 3 prior sessions
+    const seenSessions = new Set<string>();
+    const memoryMessages: string[] = [];
+    for (const msg of prevSessionMessages) {
+      if (seenSessions.size >= 3) break;
+      if (!seenSessions.has(msg.sessionId)) {
+        seenSessions.add(msg.sessionId);
+      }
+      if (seenSessions.has(msg.sessionId) && memoryMessages.filter((m) => m.startsWith(`[${msg.sessionId.slice(0, 8)}`)).length < 4) {
+        const date = msg.timestamp.toLocaleDateString("en-IN", { month: "short", day: "numeric" });
+        memoryMessages.push(`[${msg.sessionId.slice(0, 8)}] ${date} ${msg.role}: ${msg.content.slice(0, 200)}`);
+      }
+    }
+
+    let memoryContext = "";
+    if (memoryMessages.length > 0) {
+      memoryContext = `\n\n[PREVIOUS CONVERSATIONS — for memory/context]\n${memoryMessages.reverse().join("\n")}\n[END PREVIOUS CONVERSATIONS]`;
+    }
+
     // Build messages array
     const messages: MessageParam[] = [];
 
@@ -69,7 +99,7 @@ export async function sendMessage(
     const stream = client.messages.stream({
       model: "claude-sonnet-4-20250514",
       max_tokens: 2048,
-      system: `${systemPrompt}\n\n${financialContext}`,
+      system: `${systemPrompt}\n\n${financialContext}${memoryContext}`,
       messages,
     });
 
