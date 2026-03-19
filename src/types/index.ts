@@ -98,6 +98,7 @@ export interface EMI {
   status: "active" | "completed";
   notes?: string;
   creditCardAccountId?: number; // link EMI to a credit card
+  lastPaidDate?: Date; // tracks when Mark Paid was last clicked
   createdAt: Date;
 }
 

@@ -397,11 +397,11 @@ export default function EMILendings() {
                 const remaining = emi.tenureMonths - emi.paidCount;
                 const now = new Date();
                 const today = now.getDate();
-                // Calculate expected paid count for this month
-                const startDate = new Date(emi.startDate);
-                const monthsElapsed = (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth());
-                const expectedPaid = today >= emi.dueDay ? monthsElapsed + 1 : monthsElapsed;
-                const paidThisMonth = emi.paidCount >= expectedPaid;
+                // Check if Mark Paid was clicked this month
+                const lastPaid = emi.lastPaidDate ? new Date(emi.lastPaidDate) : null;
+                const paidThisMonth = lastPaid
+                  ? lastPaid.getFullYear() === now.getFullYear() && lastPaid.getMonth() === now.getMonth()
+                  : !lastPaid; // No lastPaidDate = legacy EMI, don't show overdue until next month
                 const isDueSoon = !paidThisMonth && emi.dueDay - today <= 3 && emi.dueDay - today >= 0;
                 const isOverdue = !paidThisMonth && today > emi.dueDay;
 

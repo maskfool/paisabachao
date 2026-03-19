@@ -30,7 +30,7 @@ export function useEMIs() {
     const emi = await db.emis.get(id);
     if (!emi) return;
     const newPaidCount = emi.paidCount + 1;
-    const updates: Partial<EMI> = { paidCount: newPaidCount };
+    const updates: Partial<EMI> = { paidCount: newPaidCount, lastPaidDate: new Date() };
     if (newPaidCount >= emi.tenureMonths) {
       updates.status = "completed";
     }

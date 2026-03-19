@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import AppLayout from "@/components/AppLayout";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useChat, useChatSessions } from "@/hooks/useChat";
 import { useSettings } from "@/hooks/useSettings";
 import { decrypt } from "@/lib/crypto";
@@ -148,8 +149,8 @@ export default function Chat() {
                 <Bot className="h-4 w-4 text-primary-foreground" />
               </div>
               <div className="max-w-[80%] rounded-xl px-4 py-3 bg-card border border-border">
-                <div className="prose prose-sm dark:prose-invert max-w-none [&_table]:w-full [&_table]:text-xs [&_table]:border-collapse [&_table]:border [&_table]:border-border [&_table]:rounded-lg [&_table]:overflow-hidden [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:bg-secondary [&_th]:border [&_th]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:border [&_td]:border-border [&_tr:nth-child(even)]:bg-secondary/30">
-                  <ReactMarkdown>{WELCOME_MESSAGE}</ReactMarkdown>
+                <div className="chat-markdown">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{WELCOME_MESSAGE}</ReactMarkdown>
                 </div>
               </div>
             </motion.div>
@@ -178,8 +179,8 @@ export default function Chat() {
                     : "bg-card border border-border"
                 }`}>
                   {msg.role === "assistant" ? (
-                    <div className="prose prose-sm dark:prose-invert max-w-none [&_table]:w-full [&_table]:text-xs [&_table]:border-collapse [&_table]:border [&_table]:border-border [&_table]:rounded-lg [&_table]:overflow-hidden [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:bg-secondary [&_th]:border [&_th]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:border [&_td]:border-border [&_tr:nth-child(even)]:bg-secondary/30 ">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    <div className="chat-markdown ">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                     </div>
                   ) : (
                     <p className="text-sm">{msg.content}</p>
@@ -210,8 +211,8 @@ export default function Chat() {
               </div>
               <div className="max-w-[80%] rounded-xl px-4 py-3 bg-card border border-border">
                 {streamingText ? (
-                  <div className="prose prose-sm dark:prose-invert max-w-none [&_table]:w-full [&_table]:text-xs [&_table]:border-collapse [&_table]:border [&_table]:border-border [&_table]:rounded-lg [&_table]:overflow-hidden [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:bg-secondary [&_th]:border [&_th]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:border [&_td]:border-border [&_tr:nth-child(even)]:bg-secondary/30">
-                    <ReactMarkdown>{streamingText}</ReactMarkdown>
+                  <div className="chat-markdown">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{streamingText}</ReactMarkdown>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 text-muted-foreground">
