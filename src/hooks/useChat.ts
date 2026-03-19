@@ -23,7 +23,7 @@ export function useChat(sessionId: string) {
   ) ?? [];
 
   const send = useCallback(
-    async (text: string, apiKey: string, strictness: StrictnessLevel = "strict") => {
+    async (text: string, apiKey: string, strictness: StrictnessLevel = "strict", model?: string, provider: "anthropic" | "openai" = "anthropic") => {
       if (!text.trim() || isStreaming) return;
 
       setError(null);
@@ -44,7 +44,9 @@ export function useChat(sessionId: string) {
 
       await sendMessage(text.trim(), sessionId, {
         apiKey,
+        provider,
         strictness,
+        model,
         onToken: (token) => {
           if (abortRef.current) return;
           fullText += token;

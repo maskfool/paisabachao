@@ -56,15 +56,23 @@ export default function Chat() {
     }
   }, [sessions, sessionId]);
 
-  const [apiKey, setApiKey] = useState("");
+  const [claudeKey, setClaudeKey] = useState("");
+  const [openaiKey, setOpenaiKey] = useState("");
   const strictness = (settings.aiStrictness as StrictnessLevel) || "strict";
+  const aiModel = settings.aiModel || "claude-sonnet-4-20250514";
+  const isOpenAI = aiModel.startsWith("gpt-") || aiModel.startsWith("o1") || aiModel.startsWith("o3");
+  const activeKey = isOpenAI ? openaiKey : claudeKey;
+  const provider = isOpenAI ? "openai" as const : "anthropic" as const;
 
-  // Decrypt API key from settings
+  // Decrypt API keys from settings
   useEffect(() => {
     if (settings.apiKey) {
-      decrypt(settings.apiKey).then(setApiKey).catch(() => setApiKey(settings.apiKey));
+      decrypt(settings.apiKey).then(setClaudeKey).catch(() => setClaudeKey(settings.apiKey));
     }
-  }, [settings.apiKey]);
+    if (settings.openaiApiKey) {
+      decrypt(settings.openaiApiKey).then(setOpenaiKey).catch(() => setOpenaiKey(settings.openaiApiKey));
+    }
+  }, [settings.apiKey, settings.openaiApiKey]);
   const { messages, isStreaming, streamingText, error, send, clearSession } = useChat(sessionId);
 
   const [input, setInput] = useState("");
@@ -78,9 +86,9 @@ export default function Chat() {
     (text: string) => {
       if (!text.trim()) return;
       setInput("");
-      send(text, apiKey, strictness);
+      send(text, activeKey, strictness, aiModel, provider);
     },
-    [send, apiKey, strictness]
+    [send, activeKey, strictness, aiModel, provider]
   );
 
   const handleNewChat = () => {
@@ -101,11 +109,11 @@ export default function Chat() {
           <div>
             <h2 className="font-semibold text-sm">PaisaBachao AI</h2>
             <p className="text-xs text-muted-foreground">
-              {strictness === "strict" ? "Strict" : strictness === "moderate" ? "Balanced" : "Gentle"} financial advisor
+              {strictness === "strict" ? "Strict" : strictness === "moderate" ? "Balanced" : "Gentle"} · {aiModel.includes("opus") ? "Opus" : aiModel.includes("haiku") ? "Haiku" : aiModel.includes("sonnet") ? "Sonnet" : aiModel === "gpt-4o" ? "GPT-4o" : aiModel === "gpt-4o-mini" ? "GPT-4o Mini" : aiModel === "o3-mini" ? "O3 Mini" : aiModel}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            {apiKey ? (
+            {activeKey ? (
               <div className="flex items-center gap-1.5">
                 <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
                 <span className="text-xs text-muted-foreground">Connected</span>
@@ -252,8 +260,8 @@ export default function Chat() {
 
         {/* Input */}
         <div className="p-4 border-t border-border bg-card">
-          {!apiKey && (
-            <p className="text-xs text-warning mb-2">Add your Claude API key in Settings to start chatting.</p>
+          {!activeKey && (
+            <p className="text-xs text-warning mb-2">Add your {isOpenAI ? "OpenAI" : "Claude"} API key in Settings to start chatting.</p>
           )}
           <form
             onSubmit={(e) => { e.preventDefault(); handleSend(input); }}
@@ -262,15 +270,15 @@ export default function Chat() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={apiKey ? "Ask me anything about your finances..." : "Configure API key in Settings first..."}
+              placeholder={activeKey ? "Ask me anything about your finances..." : "Configure API key in Settings first..."}
               className="flex-1 bg-secondary border-0"
-              disabled={isStreaming || !apiKey}
+              disabled={isStreaming || !activeKey}
             />
             <Button
               type="submit"
               size="icon"
               className="gradient-primary border-0 shrink-0"
-              disabled={!input.trim() || isStreaming || !apiKey}
+              disabled={!input.trim() || isStreaming || !activeKey}
             >
               <Send className="h-4 w-4" />
             </Button>

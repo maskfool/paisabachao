@@ -30,8 +30,10 @@ export default function SettingsPage() {
   const [defaultIncome, setDefaultIncome] = useState("");
   const [thisMonthIncome, setThisMonthIncome] = useState("");
   const [isFreelancer, setIsFreelancer] = useState(false);
-  const [apiKey, setApiKey] = useState("");
+  const [claudeKey, setClaudeKey] = useState("");
+  const [openaiKey, setOpenaiKey] = useState("");
   const [strictness, setStrictness] = useState("strict");
+  const [aiModel, setAiModel] = useState("claude-sonnet-4-20250514");
   const [localConversionRate, setLocalConversionRate] = useState("1");
   const [localCurrency, setLocalCurrency] = useState("INR");
 
@@ -47,14 +49,20 @@ export default function SettingsPage() {
     setDefaultIncome(settings.monthlyIncome || "");
     setIsFreelancer(settings.incomeType === "variable");
     if (settings.apiKey) {
-      decrypt(settings.apiKey).then((k) => setApiKey(k)).catch(() => setApiKey(settings.apiKey));
+      decrypt(settings.apiKey).then((k) => setClaudeKey(k)).catch(() => setClaudeKey(settings.apiKey));
     } else {
-      setApiKey("");
+      setClaudeKey("");
+    }
+    if (settings.openaiApiKey) {
+      decrypt(settings.openaiApiKey).then((k) => setOpenaiKey(k)).catch(() => setOpenaiKey(settings.openaiApiKey));
+    } else {
+      setOpenaiKey("");
     }
     setStrictness(settings.aiStrictness || "strict");
+    setAiModel(settings.aiModel || "claude-sonnet-4-20250514");
     setLocalConversionRate(String(conversionRate));
     setLocalCurrency(currencyCode);
-  }, [settings.name, settings.monthlyIncome, settings.incomeType, settings.apiKey, settings.aiStrictness, conversionRate, currencyCode]);
+  }, [settings.name, settings.monthlyIncome, settings.incomeType, settings.apiKey, settings.openaiApiKey, settings.aiStrictness, settings.aiModel, conversionRate, currencyCode]);
 
   // Sync this month's income
   useEffect(() => {
@@ -81,9 +89,16 @@ export default function SettingsPage() {
   };
 
   const saveAI = async () => {
-    const encryptedKey = await encrypt(apiKey);
-    await setSetting("apiKey", encryptedKey);
+    if (claudeKey.trim()) {
+      const encryptedClaude = await encrypt(claudeKey);
+      await setSetting("apiKey", encryptedClaude);
+    }
+    if (openaiKey.trim()) {
+      const encryptedOpenai = await encrypt(openaiKey);
+      await setSetting("openaiApiKey", encryptedOpenai);
+    }
     await setSetting("aiStrictness", strictness);
+    await setSetting("aiModel", aiModel);
     setAiDirty(false);
     toast.success("AI settings saved!");
   };
@@ -341,14 +356,64 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label className="text-xs">Claude API Key</Label>
+              <Label className="text-xs">Claude API Key (Anthropic)</Label>
               <Input
                 type="password"
-                value={apiKey}
-                onChange={(e) => { setApiKey(e.target.value); setAiDirty(true); }}
+                value={claudeKey}
+                onChange={(e) => { setClaudeKey(e.target.value); setAiDirty(true); }}
                 placeholder="sk-ant-..."
               />
-              <p className="text-xs text-muted-foreground mt-1">Encrypted and stored locally. Never sent to our servers.</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Get from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" className="text-primary underline">console.anthropic.com</a>
+              </p>
+            </div>
+            <div>
+              <Label className="text-xs">OpenAI API Key</Label>
+              <Input
+                type="password"
+                value={openaiKey}
+                onChange={(e) => { setOpenaiKey(e.target.value); setAiDirty(true); }}
+                placeholder="sk-..."
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Get from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-primary underline">platform.openai.com</a>
+              </p>
+            </div>
+            <div className="rounded-lg bg-secondary/50 border p-3">
+              <p className="text-xs text-muted-foreground">
+                Encrypted & stored locally. Add one or both — the app uses whichever key matches your selected model.
+              </p>
+            </div>
+            <Separator />
+            <div>
+              <Label className="text-xs">AI Model</Label>
+              <Select value={aiModel} onValueChange={(v) => { setAiModel(v); setAiDirty(true); }}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="claude-sonnet-4-20250514">Claude Sonnet 4 — Fast & affordable (~₹2/msg)</SelectItem>
+                  <SelectItem value="claude-opus-4-20250514">Claude Opus 4 — Best reasoning (~₹10/msg)</SelectItem>
+                  <SelectItem value="claude-haiku-4-20250414">Claude Haiku 4 — Fastest (~₹0.50/msg)</SelectItem>
+                  <SelectItem disabled={true} value="__divider" className="font-semibold text-muted-foreground pointer-events-none">── OpenAI Models ──</SelectItem>
+                  <SelectItem value="gpt-4o">GPT-4o — Strong & affordable (~₹1.40/msg)</SelectItem>
+                  <SelectItem value="gpt-4o-mini">GPT-4o Mini — Budget friendly (~₹0.08/msg)</SelectItem>
+                  <SelectItem value="o3-mini">O3 Mini — Advanced reasoning (~₹5/msg)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                {aiModel.includes("opus") ? "Best for complex financial analysis. Deep reasoning." :
+                 aiModel.includes("haiku") ? "Quick responses for simple expense logging." :
+                 aiModel === "gpt-4o" ? "Great quality at low cost. Needs OpenAI key." :
+                 aiModel === "gpt-4o-mini" ? "Cheapest option. Good for logging, basic advice." :
+                 aiModel === "o3-mini" ? "Strong reasoning model. Needs OpenAI key." :
+                 aiModel.includes("sonnet") ? "Recommended. Great balance of quality and cost." :
+                 "Select a model based on your needs."}
+                {(aiModel.startsWith("gpt-") || aiModel.startsWith("o3")) && !openaiKey && (
+                  <span className="text-warning font-medium"> Requires OpenAI API key above.</span>
+                )}
+                {aiModel.startsWith("claude") && !claudeKey && (
+                  <span className="text-warning font-medium"> Requires Claude API key above.</span>
+                )}
+              </p>
             </div>
             <Separator />
             <div>
