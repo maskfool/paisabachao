@@ -4,7 +4,7 @@ import { useUser, useClerk } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, MessageSquare, Receipt, Target, BarChart3, Settings,
-  Menu, X, LogOut, Moon, Sun, ChevronLeft, CircleDollarSign, Wallet
+  Menu, X, LogOut, Moon, Sun, CircleDollarSign, Wallet, Search, Mic
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -56,9 +56,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         initial={false}
         animate={{ width: collapsed ? 80 : 272 }}
         className="hidden lg:flex flex-col bg-card m-3 rounded-[2rem]"
-        style={{ boxShadow: "0 15px 35px rgba(0, 0, 0, 0.04)" }}
+        style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)" }}
       >
-        <div className={cn("flex items-center gap-3 p-6 pb-4", collapsed && "justify-center p-4")}>
+        {/* Hamburger toggle */}
+        <div className={cn("px-6 pt-6 pb-2", collapsed && "px-4 pt-4")}>
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="h-10 w-10 rounded-xl hover:bg-secondary flex items-center justify-center transition-colors"
+          >
+            <Menu className="h-5 w-5 text-primary" />
+          </button>
+        </div>
+
+        <div className={cn("flex items-center gap-3 px-6 pb-4", collapsed && "justify-center px-4")}>
           <div className="h-10 w-10 rounded-2xl gradient-primary flex items-center justify-center shrink-0">
             <span className="text-primary-foreground font-semibold text-sm">P</span>
           </div>
@@ -130,16 +140,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           >
             <LogOut className="h-5 w-5 shrink-0" />
             {!collapsed && <span>Sign Out</span>}
-          </button>
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className={cn(
-              "flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-secondary w-full transition-colors",
-              collapsed && "justify-center px-3"
-            )}
-          >
-            <ChevronLeft className={cn("h-5 w-5 shrink-0 transition-transform", collapsed && "rotate-180")} />
-            {!collapsed && <span>Collapse</span>}
           </button>
         </div>
       </motion.aside>
@@ -235,6 +235,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </>
           )}
         </AnimatePresence>
+
+        {/* AI Search Bar */}
+        <div
+          className="hidden lg:flex mx-4 mt-3 h-14 rounded-full bg-card items-center px-6 gap-4 cursor-pointer hover:bg-card/80 transition-colors"
+          style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.1)" }}
+          onClick={() => navigate("/chat")}
+        >
+          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="text-sm text-muted-foreground flex-1">Ask AI: How much can I spend on dinner tonight?</span>
+          <Mic className="h-4 w-4 text-muted-foreground shrink-0" />
+        </div>
 
         <main className="flex-1 overflow-y-auto">
           {children}
