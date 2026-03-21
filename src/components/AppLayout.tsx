@@ -4,7 +4,7 @@ import { useUser, useClerk } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, MessageSquare, Receipt, Target, BarChart3, Settings,
-  Menu, X, LogOut, Moon, Sun, CircleDollarSign, Wallet, Search, Mic
+  Menu, X, LogOut, Moon, Sun, CircleDollarSign, Wallet, Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -251,8 +251,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           onClick={() => navigate("/chat")}
         >
           <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="text-sm text-muted-foreground flex-1 truncate">Ask AI: How much can I spend today?</span>
-          <Mic className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="text-sm text-muted-foreground flex-1 truncate">Type to ask AI — e.g. "How much did I spend this week?"</span>
         </div>
 
         <main className="flex-1 overflow-y-auto">

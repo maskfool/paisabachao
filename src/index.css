@@ -133,6 +133,11 @@
   .bg-card {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
   }
+
+  /* Fix dark mode date input calendar icon */
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(0.8);
+  }
 }
 
 @layer utilities {

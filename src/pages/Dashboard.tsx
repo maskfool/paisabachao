@@ -205,7 +205,7 @@ export default function Dashboard() {
     dailyExpenses,
   });
 
-  const recentTx = transactions.slice(0, 6);
+  const recentTx = [...transactions].sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 6);
 
   const greeting = new Date().getHours() < 12 ? "Good morning" :
     new Date().getHours() < 17 ? "Good afternoon" : "Good evening";
