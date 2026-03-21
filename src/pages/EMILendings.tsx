@@ -201,12 +201,12 @@ function AddLendingDialog({ onAdd, bankAccounts }: {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [dueDate, setDueDate] = useState("");
-  const [fromAccount, setFromAccount] = useState("");
+  const [fromAccount, setFromAccount] = useState(bankAccounts[0]?.id ? String(bankAccounts[0].id) : "");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const reset = () => {
     setType("lent"); setPersonName(""); setAmount(""); setDescription("");
-    setDate(new Date().toISOString().split("T")[0]); setDueDate(""); setFromAccount(""); setErrors({});
+    setDate(new Date().toISOString().split("T")[0]); setDueDate(""); setFromAccount(bankAccounts[0]?.id ? String(bankAccounts[0].id) : ""); setErrors({});
   };
 
   const handleSubmit = async () => {
@@ -315,9 +315,14 @@ function AddLendingDialog({ onAdd, bankAccounts }: {
 
 // ===== Record Payment Dialog =====
 
-function RecordPaymentDialog({ lending, onPay }: { lending: Lending; onPay: (id: number, amount: number) => Promise<unknown> }) {
+function RecordPaymentDialog({ lending, onPay, bankAccounts }: {
+  lending: Lending;
+  onPay: (id: number, amount: number, accountId?: number) => Promise<unknown>;
+  bankAccounts: { id?: number; name: string; balance: number }[];
+}) {
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
+  const [accountId, setAccountId] = useState(bankAccounts[0]?.id ? String(bankAccounts[0].id) : "");
   const { format: fmt } = useCurrency();
 
   return (
@@ -342,11 +347,30 @@ function RecordPaymentDialog({ lending, onPay }: { lending: Lending; onPay: (id:
             ))}
           </div>
           <Input type="number" placeholder="Amount" className="font-mono" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          {bankAccounts.length > 0 && (
+            <div>
+              <Label className="text-xs">{lending.type === "lent" ? "Receive Into" : "Pay From"}</Label>
+              <Select value={accountId} onValueChange={setAccountId}>
+                <SelectTrigger><SelectValue placeholder="Select account" /></SelectTrigger>
+                <SelectContent>
+                  {bankAccounts.map((acc) => (
+                    <SelectItem key={acc.id} value={String(acc.id)}>
+                      {acc.name} — ₹{acc.balance.toLocaleString("en-IN")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                {lending.type === "lent" ? "Money will be added to this account" : "Money will be deducted from this account"}
+              </p>
+            </div>
+          )}
           <Button
             className="w-full gradient-primary border-0"
             disabled={!amount || parseFloat(amount) <= 0}
             onClick={async () => {
-              await onPay(lending.id!, parseFloat(amount));
+              const aid = accountId ? parseInt(accountId) : undefined;
+              await onPay(lending.id!, parseFloat(amount), aid);
               setOpen(false);
               setAmount("");
               toast.success("Payment recorded!");
@@ -590,8 +614,8 @@ export default function EMILendings() {
                               <p className="text-xs text-muted-foreground">{l.description}</p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <RecordPaymentDialog lending={l} onPay={recordPayment} />
-                              <Button size="sm" variant="ghost" className="h-7 text-xs text-success" onClick={async () => { await settle(l.id!); toast.success("Settled!"); }}>
+                              <RecordPaymentDialog lending={l} onPay={recordPayment} bankAccounts={bankAccounts} />
+                              <Button size="sm" variant="ghost" className="h-7 text-xs text-success" onClick={async () => { const aid = bankAccounts[0]?.id; await settle(l.id!, aid); toast.success("Settled!"); }}>
                                 <Check className="h-3 w-3 mr-1" /> Settle
                               </Button>
                               <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={async () => { await deleteLending(l.id!); toast.success("Deleted"); }}>
@@ -638,8 +662,8 @@ export default function EMILendings() {
                               <p className="text-xs text-muted-foreground">{l.description}</p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <RecordPaymentDialog lending={l} onPay={recordPayment} />
-                              <Button size="sm" variant="ghost" className="h-7 text-xs text-success" onClick={async () => { await settle(l.id!); toast.success("Settled!"); }}>
+                              <RecordPaymentDialog lending={l} onPay={recordPayment} bankAccounts={bankAccounts} />
+                              <Button size="sm" variant="ghost" className="h-7 text-xs text-success" onClick={async () => { const aid = bankAccounts[0]?.id; await settle(l.id!, aid); toast.success("Settled!"); }}>
                                 <Check className="h-3 w-3 mr-1" /> Settle
                               </Button>
                               <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={async () => { await deleteLending(l.id!); toast.success("Deleted"); }}>
