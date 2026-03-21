@@ -111,25 +111,27 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               {pieData.length > 0 ? (
-                <div className="h-[280px] flex items-center">
-                  <ResponsiveContainer width="50%" height="100%">
-                    <PieChart>
-                      <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={50} strokeWidth={2}>
-                        {pieData.map((entry, idx) => (
-                          <Cell key={idx} fill={entry.fill} stroke="hsl(var(--card))" />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--card))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                          fontSize: "12px",
-                        }}
-                        formatter={(value: number) => [fmt(value), "Spent"]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div className="h-[200px] sm:h-[280px] w-full sm:w-1/2">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={45} strokeWidth={2}>
+                          {pieData.map((entry, idx) => (
+                            <Cell key={idx} fill={entry.fill} stroke="hsl(var(--card))" />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "8px",
+                            fontSize: "12px",
+                          }}
+                          formatter={(value: number) => [fmt(value), "Spent"]}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                   <div className="flex-1 space-y-2">
                     {pieData.map((d) => (
                       <div key={d.name} className="flex items-center justify-between text-xs">
@@ -182,7 +184,7 @@ export default function Analytics() {
               <CardTitle className="text-base">Financial Health Breakdown — Grade: {health.grade} ({health.total}/100)</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 {[
                   { label: "Savings Rate", score: health.savingsRate, weight: "30%" },
                   { label: "Budget Adherence", score: health.budgetAdherence, weight: "25%" },
@@ -210,7 +212,7 @@ export default function Analytics() {
                       <span className="absolute inset-0 flex items-center justify-center text-sm font-bold">{item.score}</span>
                     </div>
                     <p className="text-xs font-medium">{item.label}</p>
-                    <p className="text-[10px] text-muted-foreground">{item.weight}</p>
+                    <p className="text-xs text-muted-foreground">{item.weight}</p>
                   </div>
                 ))}
               </div>

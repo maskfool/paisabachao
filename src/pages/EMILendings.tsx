@@ -139,7 +139,7 @@ function AddEMIDialog({ onAdd }: { onAdd: (data: Omit<EMI, "id" | "createdAt">) 
               {errors.emiAmount && <p className="text-xs text-destructive mt-0.5">{errors.emiAmount}</p>}
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div>
               <Label className="text-xs">Interest Rate (%)</Label>
               <Input type="number" placeholder="9.5" className="font-mono" value={interestRate} onChange={(e) => setInterestRate(e.target.value)} />
@@ -176,7 +176,7 @@ function AddEMIDialog({ onAdd }: { onAdd: (data: Omit<EMI, "id" | "createdAt">) 
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-[10px] text-muted-foreground mt-0.5">For EMIs billed to a credit card (e.g. iPhone EMI on HDFC card)</p>
+              <p className="text-xs text-muted-foreground mt-0.5">For EMIs billed to a credit card (e.g. iPhone EMI on HDFC card)</p>
             </div>
           )}
           <Button className="w-full gradient-primary border-0" onClick={handleSubmit}>
@@ -388,7 +388,7 @@ export default function EMILendings() {
           {/* ===== EMI TAB ===== */}
           <TabsContent value="emi" className="space-y-6">
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <Card>
                 <CardContent className="pt-6">
                   <p className="text-xs text-muted-foreground mb-1">Monthly EMI Outflow</p>
@@ -438,25 +438,25 @@ export default function EMILendings() {
                   >
                     <Card>
                       <CardContent className="pt-6">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                               <Icon className="h-5 w-5 text-primary" />
                             </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-semibold text-sm">{emi.name}</h3>
-                                {isDueSoon && <Badge variant="outline" className="text-[10px] h-4 text-warning border-warning">Due Soon</Badge>}
-                                {isOverdue && <Badge variant="destructive" className="text-[10px] h-4">Overdue</Badge>}
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h3 className="font-semibold text-sm truncate">{emi.name}</h3>
+                                {isDueSoon && <Badge variant="outline" className="text-xs h-5 text-warning border-warning shrink-0">Due Soon</Badge>}
+                                {isOverdue && <Badge variant="destructive" className="text-xs h-5 shrink-0">Overdue</Badge>}
                               </div>
-                              <p className="text-xs text-muted-foreground">{emi.lender} &middot; {emi.interestRate}% p.a. &middot; Due: {emi.dueDay}th of month</p>
+                              <p className="text-xs text-muted-foreground truncate">{emi.lender} · {emi.interestRate}% p.a. · Due: {emi.dueDay}th</p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 shrink-0">
                             <Button
                               size="sm"
                               variant="outline"
-                              className="h-7 text-xs"
+                              className="h-9 text-xs"
                               onClick={async () => { await payEMI(emi.id!); toast.success("EMI marked as paid!"); }}
                             >
                               <Check className="h-3 w-3 mr-1" /> Mark Paid
@@ -464,31 +464,31 @@ export default function EMILendings() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                              className="h-9 w-9 text-muted-foreground hover:text-destructive"
                               onClick={async () => { await deleteEMI(emi.id!); toast.success("EMI deleted"); }}
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 mb-3">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-3">
                           <div>
-                            <p className="text-[10px] text-muted-foreground">Monthly EMI</p>
+                            <p className="text-xs text-muted-foreground">Monthly EMI</p>
                             <p className="text-sm font-bold font-mono">{fmt(emi.emiAmount)}</p>
                           </div>
                           <div>
-                            <p className="text-[10px] text-muted-foreground">Total Loan</p>
+                            <p className="text-xs text-muted-foreground">Total Loan</p>
                             <p className="text-sm font-mono">{fmt(emi.totalAmount)}</p>
                           </div>
                           <div>
-                            <p className="text-[10px] text-muted-foreground">Remaining</p>
-                            <p className="text-sm font-mono">{remaining} of {emi.tenureMonths} months</p>
+                            <p className="text-xs text-muted-foreground">Remaining</p>
+                            <p className="text-sm font-mono">{remaining}/{emi.tenureMonths} mo</p>
                           </div>
                         </div>
 
                         <div>
-                          <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                          <div className="flex justify-between text-xs text-muted-foreground mb-1">
                             <span>{emi.paidCount} paid</span>
                             <span>{pct}%</span>
                           </div>
@@ -582,10 +582,10 @@ export default function EMILendings() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h4 className="font-semibold text-sm">{l.personName}</h4>
-                                <Badge variant={l.status === "partial" ? "secondary" : "outline"} className="text-[10px] h-4">
+                                <Badge variant={l.status === "partial" ? "secondary" : "outline"} className="text-xs h-5">
                                   {l.status === "partial" ? "Partially Paid" : "Pending"}
                                 </Badge>
-                                {isOverdue && <Badge variant="destructive" className="text-[10px] h-4">Overdue</Badge>}
+                                {isOverdue && <Badge variant="destructive" className="text-xs h-5">Overdue</Badge>}
                               </div>
                               <p className="text-xs text-muted-foreground">{l.description}</p>
                             </div>
@@ -630,10 +630,10 @@ export default function EMILendings() {
                             <div>
                               <div className="flex items-center gap-2">
                                 <h4 className="font-semibold text-sm">{l.personName}</h4>
-                                <Badge variant={l.status === "partial" ? "secondary" : "outline"} className="text-[10px] h-4">
+                                <Badge variant={l.status === "partial" ? "secondary" : "outline"} className="text-xs h-5">
                                   {l.status === "partial" ? "Partially Paid" : "Pending"}
                                 </Badge>
-                                {isOverdue && <Badge variant="destructive" className="text-[10px] h-4">Overdue</Badge>}
+                                {isOverdue && <Badge variant="destructive" className="text-xs h-5">Overdue</Badge>}
                               </div>
                               <p className="text-xs text-muted-foreground">{l.description}</p>
                             </div>
@@ -672,7 +672,7 @@ export default function EMILendings() {
                       <span className="text-sm opacity-60">{l.personName}</span>
                       <span className="text-xs font-mono text-muted-foreground">{fmt(l.amount)}</span>
                     </div>
-                    <Badge variant="outline" className="text-[10px] text-success border-success">Settled</Badge>
+                    <Badge variant="outline" className="text-xs text-success border-success">Settled</Badge>
                   </div>
                 ))}
               </div>

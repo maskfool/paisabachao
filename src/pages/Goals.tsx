@@ -339,7 +339,7 @@ export default function Goals() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive"
+                            className="h-9 w-9 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 text-muted-foreground hover:text-destructive"
                             onClick={() => g.id && deleteGoal(g.id)}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -405,7 +405,7 @@ export default function Goals() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive"
+                          className="h-9 w-9 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 text-muted-foreground hover:text-destructive"
                           onClick={() => b.id && deleteBudget(b.id)}
                         >
                           <Trash2 className="h-3.5 w-3.5" />

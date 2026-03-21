@@ -344,22 +344,22 @@ export default function CreditCardsPage() {
                 <Card>
                   <CardContent className="pt-6">
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center shrink-0">
                           <CreditCard className="h-5 w-5 text-primary" />
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <h3 className="font-semibold text-sm">{card.name}</h3>
                             {isDueSoon && (
-                              <Badge variant="destructive" className="text-[10px] h-4">
-                                <AlertTriangle className="h-3 w-3 mr-0.5" /> Payment Due Soon
+                              <Badge variant="destructive" className="text-xs h-5 shrink-0">
+                                <AlertTriangle className="h-3 w-3 mr-0.5" /> Due Soon
                               </Badge>
                             )}
                             {isBillingSoon && (
-                              <Badge variant="outline" className="text-[10px] h-4 text-warning border-warning">
-                                Bill Generating Soon
+                              <Badge variant="outline" className="text-xs h-5 text-warning border-warning shrink-0">
+                                Billing Soon
                               </Badge>
                             )}
                           </div>
@@ -377,19 +377,19 @@ export default function CreditCardsPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                         <PayBillDialog card={card} bankAccounts={bankAccounts} onPay={payBill} />
                         <EditCardDialog card={card} onUpdate={updateCreditCard} />
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                          className="h-9 w-9 text-muted-foreground hover:text-destructive"
                           onClick={async () => {
                             await deleteCreditCard(card.id!);
                             toast.success("Card deleted");
                           }}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -412,28 +412,28 @@ export default function CreditCardsPage() {
                           className={`h-full rounded-full ${utilizationBarColor(card.utilizationPercent)}`}
                         />
                       </div>
-                      <div className="flex justify-between text-[10px] mt-1">
+                      <div className="flex justify-between text-xs mt-1">
                         <span className={utilizationColor(card.utilizationPercent)}>{card.utilizationPercent}% used</span>
                         <span className="text-success">Available: {fmt(card.availableLimit)}</span>
                       </div>
                     </div>
 
                     {/* Payment Info */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 rounded-lg bg-secondary/30 border border-border/30">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 rounded-xl bg-secondary/30 border border-border/30">
                       <div>
-                        <p className="text-[10px] text-muted-foreground">Outstanding</p>
+                        <p className="text-xs text-muted-foreground">Outstanding</p>
                         <p className="text-sm font-bold font-mono text-destructive">{fmt(card.outstanding)}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] text-muted-foreground">Minimum Due</p>
+                        <p className="text-xs text-muted-foreground">Min Due</p>
                         <p className="text-sm font-bold font-mono">{fmt(card.minimumDue)}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] text-muted-foreground">EMIs on Card</p>
-                        <p className="text-sm font-bold font-mono">{fmt(card.emiMonthlyTotal)}<span className="text-[10px] text-muted-foreground font-normal">/mo</span></p>
+                        <p className="text-xs text-muted-foreground">EMIs</p>
+                        <p className="text-sm font-bold font-mono">{fmt(card.emiMonthlyTotal)}<span className="text-xs text-muted-foreground font-normal">/mo</span></p>
                       </div>
                       <div>
-                        <p className="text-[10px] text-muted-foreground">Next Due</p>
+                        <p className="text-xs text-muted-foreground">Next Due</p>
                         <p className="text-sm font-medium">{card.nextDueDate ? card.nextDueDate.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—"}</p>
                       </div>
                     </div>
@@ -441,7 +441,7 @@ export default function CreditCardsPage() {
                     {/* Linked EMIs */}
                     {card.linkedEMIs.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-border/30">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">Linked EMIs</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Linked EMIs</p>
                         <div className="space-y-1.5">
                           {card.linkedEMIs.map((emi) => (
                             <div key={emi.id} className="flex items-center justify-between text-xs">

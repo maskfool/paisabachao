@@ -201,7 +201,7 @@ function EditTransactionDialog({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary"
+          className="h-9 w-9 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-primary"
         >
           <Pencil className="h-4 w-4" />
         </Button>
@@ -279,14 +279,14 @@ export default function Transactions() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search transactions... (Ctrl+K)"
+                placeholder="Search transactions..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-9 bg-secondary border-0"
               />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[160px]">
+              <SelectTrigger className="w-full sm:w-[160px]">
                 <Filter className="h-4 w-4 mr-1" />
                 <SelectValue />
               </SelectTrigger>
@@ -362,8 +362,8 @@ export default function Transactions() {
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-xs text-muted-foreground">{tx.date.toLocaleDateString()}</span>
-                          <Badge variant={badge.variant} className="text-[10px] h-4 px-1.5">{badge.label}</Badge>
-                          {tx.isRecurring && <Badge variant="outline" className="text-[10px] h-4 px-1.5">{tx.recurringFrequency}</Badge>}
+                          <Badge variant={badge.variant} className="text-xs h-5 px-1.5">{badge.label}</Badge>
+                          {tx.isRecurring && <Badge variant="outline" className="text-xs h-5 px-1.5">{tx.recurringFrequency}</Badge>}
                         </div>
                       </div>
                     </div>
@@ -379,7 +379,7 @@ export default function Transactions() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                        className="h-9 w-9 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
                         onClick={() => tx.id && deleteTransaction(tx.id)}
                       >
                         <Trash2 className="h-4 w-4" />

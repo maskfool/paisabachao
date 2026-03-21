@@ -244,14 +244,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           )}
         </AnimatePresence>
 
-        {/* AI Search Bar */}
+        {/* AI Search Bar — visible on all screens */}
         <div
-          className="hidden lg:flex mx-4 mt-3 h-14 rounded-full bg-card items-center px-6 gap-4 cursor-pointer hover:bg-card/80 transition-colors"
-          style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.1)" }}
+          className="flex mx-3 lg:mx-4 mt-3 h-12 lg:h-14 rounded-full bg-card items-center px-5 lg:px-6 gap-3 lg:gap-4 cursor-pointer hover:bg-card/80 transition-colors active:scale-[0.99]"
+          style={{ boxShadow: "0 20px 50px rgba(0, 0, 0, 0.1)" }}
           onClick={() => navigate("/chat")}
         >
           <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="text-sm text-muted-foreground flex-1">Ask AI: How much can I spend on dinner tonight?</span>
+          <span className="text-sm text-muted-foreground flex-1 truncate">Ask AI: How much can I spend today?</span>
           <Mic className="h-4 w-4 text-muted-foreground shrink-0" />
         </div>
 
