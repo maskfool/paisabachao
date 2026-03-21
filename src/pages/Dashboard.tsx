@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import {
   TrendingUp, TrendingDown, DollarSign, Plus, MessageSquare,
-  ArrowUpRight, ArrowDownRight
+  ArrowUpRight, ArrowDownRight, ChevronDown, Landmark, CreditCard
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -66,13 +66,102 @@ function StatCard({ title, value, change, positive, icon: Icon }: { title: strin
   );
 }
 
+function BalanceCard({ totalBalance, accounts, fmt, savingsRate }: {
+  totalBalance: number;
+  accounts: { id?: number; name: string; type: string; balance: number }[];
+  fmt: (n: number) => string;
+  savingsRate: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const bankAccounts = accounts.filter((a) => a.type !== "credit_card");
+  const creditCards = accounts.filter((a) => a.type === "credit_card");
+  const bankTotal = bankAccounts.reduce((s, a) => s + a.balance, 0);
+  const ccTotal = creditCards.reduce((s, a) => s + a.balance, 0);
+
+  return (
+    <Card className="cursor-pointer" onClick={() => setExpanded(!expanded)}>
+      <CardContent className="pt-6">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-muted-foreground">Total Balance</span>
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <DollarSign className="h-4 w-4 text-primary" />
+          </div>
+        </div>
+        <p className="text-2xl font-bold font-mono">{fmt(totalBalance)}</p>
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-1">
+            {savingsRate > 0 ? <ArrowUpRight className="h-3 w-3 text-success" /> : <ArrowDownRight className="h-3 w-3 text-destructive" />}
+            <span className={`text-xs font-medium ${savingsRate > 0 ? "text-success" : "text-destructive"}`}>{savingsRate}% saved</span>
+          </div>
+          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
+        </div>
+
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-3 pt-3 border-t border-border space-y-2">
+                {bankAccounts.length > 0 && (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Bank Accounts</p>
+                    {bankAccounts.map((a) => (
+                      <div key={a.id} className="flex items-center justify-between py-1">
+                        <div className="flex items-center gap-1.5">
+                          <Landmark className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-xs">{a.name}</span>
+                        </div>
+                        <span className="text-xs font-mono font-medium">{fmt(a.balance)}</span>
+                      </div>
+                    ))}
+                    <div className="flex justify-between pt-1 border-t border-dashed border-border">
+                      <span className="text-[10px] text-muted-foreground">Subtotal</span>
+                      <span className="text-[10px] font-mono font-medium">{fmt(bankTotal)}</span>
+                    </div>
+                  </div>
+                )}
+                {creditCards.length > 0 && (
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Credit Cards</p>
+                    {creditCards.map((a) => (
+                      <div key={a.id} className="flex items-center justify-between py-1">
+                        <div className="flex items-center gap-1.5">
+                          <CreditCard className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-xs">{a.name}</span>
+                        </div>
+                        <span className={`text-xs font-mono font-medium ${a.balance < 0 ? "text-destructive" : ""}`}>{fmt(a.balance)}</span>
+                      </div>
+                    ))}
+                    <div className="flex justify-between pt-1 border-t border-dashed border-border">
+                      <span className="text-[10px] text-muted-foreground">Outstanding</span>
+                      <span className="text-[10px] font-mono font-medium text-destructive">{fmt(ccTotal)}</span>
+                    </div>
+                  </div>
+                )}
+                <div className="flex justify-between pt-2 border-t border-border">
+                  <span className="text-xs font-medium">Net Total</span>
+                  <span className="text-xs font-mono font-bold">{fmt(totalBalance)}</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { settings, setSetting } = useSettings();
   useRecurringTransactions();
   useDailyReminder();
-  const { totalBalance } = useAccounts();
+  const { accounts, totalBalance } = useAccounts();
   const { transactions, income, expenses, savingsRate } = useMonthlyTransactions();
   const { budgets } = useBudgets();
   const { activeGoals } = useGoals();
@@ -144,7 +233,7 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <HealthScore grade={health.grade} score={health.total} />
-          <StatCard title="Total Balance" value={fmt(totalBalance)} change={`${savingsRate}% saved`} positive={savingsRate > 0} icon={DollarSign} />
+          <BalanceCard totalBalance={totalBalance} accounts={accounts} fmt={fmt} savingsRate={savingsRate} />
           <StatCard title="Income" value={fmt(income)} change={fmt(income)} positive icon={TrendingUp} />
           <StatCard title="Expenses" value={fmt(expenses)} change={`${Math.round((expenses / Math.max(income, 1)) * 100)}% of income`} positive={false} icon={TrendingDown} />
         </div>

@@ -190,7 +190,10 @@ function AddEMIDialog({ onAdd }: { onAdd: (data: Omit<EMI, "id" | "createdAt">) 
 
 // ===== Add Lending Dialog =====
 
-function AddLendingDialog({ onAdd }: { onAdd: (data: Omit<Lending, "id" | "createdAt">) => Promise<unknown> }) {
+function AddLendingDialog({ onAdd, bankAccounts }: {
+  onAdd: (data: Omit<Lending, "id" | "createdAt">, accountId?: number) => Promise<unknown>;
+  bankAccounts: { id?: number; name: string; balance: number }[];
+}) {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<Lending["type"]>("lent");
   const [personName, setPersonName] = useState("");
@@ -198,11 +201,12 @@ function AddLendingDialog({ onAdd }: { onAdd: (data: Omit<Lending, "id" | "creat
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [dueDate, setDueDate] = useState("");
+  const [fromAccount, setFromAccount] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const reset = () => {
     setType("lent"); setPersonName(""); setAmount(""); setDescription("");
-    setDate(new Date().toISOString().split("T")[0]); setDueDate(""); setErrors({});
+    setDate(new Date().toISOString().split("T")[0]); setDueDate(""); setFromAccount(""); setErrors({});
   };
 
   const handleSubmit = async () => {
@@ -215,6 +219,7 @@ function AddLendingDialog({ onAdd }: { onAdd: (data: Omit<Lending, "id" | "creat
     if (Object.keys(errs).length > 0) return;
 
     const amt = parseFloat(amount);
+    const accountId = fromAccount ? parseInt(fromAccount) : undefined;
     await onAdd({
       type,
       personName,
@@ -225,7 +230,7 @@ function AddLendingDialog({ onAdd }: { onAdd: (data: Omit<Lending, "id" | "creat
       dueDate: dueDate ? new Date(dueDate) : undefined,
       status: "pending",
       currency: "INR",
-    });
+    }, accountId);
     reset();
     setOpen(false);
     toast.success(`${type === "lent" ? "Lending" : "Borrowing"} recorded!`);
@@ -281,6 +286,24 @@ function AddLendingDialog({ onAdd }: { onAdd: (data: Omit<Lending, "id" | "creat
               <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
             </div>
           </div>
+          {bankAccounts.length > 0 && (
+            <div>
+              <Label className="text-xs">{type === "lent" ? "Paid From" : "Received In"}</Label>
+              <Select value={fromAccount} onValueChange={setFromAccount}>
+                <SelectTrigger><SelectValue placeholder="Select account" /></SelectTrigger>
+                <SelectContent>
+                  {bankAccounts.map((acc) => (
+                    <SelectItem key={acc.id} value={String(acc.id)}>
+                      {acc.name} — ₹{acc.balance.toLocaleString("en-IN")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                {type === "lent" ? "Balance will be deducted from this account" : "Balance will be added to this account"}
+              </p>
+            </div>
+          )}
           <Button className="w-full gradient-primary border-0" onClick={handleSubmit}>
             Save
           </Button>
@@ -342,6 +365,8 @@ function RecordPaymentDialog({ lending, onPay }: { lending: Lending; onPay: (id:
 export default function EMILendings() {
   const { activeEMIs, completedEMIs, totalMonthlyEMI, totalOutstanding, addEMI, deleteEMI, payEMI } = useEMIs();
   const { lent, borrowed, pendingLent, pendingBorrowed, totalLentOut, totalBorrowed, addLending, deleteLending, recordPayment, settle } = useLendings();
+  const { accounts } = useAccounts();
+  const bankAccounts = accounts.filter((a) => a.type !== "credit_card");
   const { format: fmt } = useCurrency();
 
   return (
@@ -537,7 +562,7 @@ export default function EMILendings() {
 
             {/* Add button */}
             <div className="flex justify-end">
-              <AddLendingDialog onAdd={addLending} />
+              <AddLendingDialog onAdd={addLending} bankAccounts={bankAccounts} />
             </div>
 
             {/* Lent list */}
