@@ -18,7 +18,9 @@ import { useFinancialHealth } from "@/hooks/useFinancialHealth";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useSettings } from "@/hooks/useSettings";
 import { useRecurringTransactions } from "@/hooks/useRecurring";
+import { useDailyReminder } from "@/hooks/useReminder";
 import AppLayout from "@/components/AppLayout";
+import DailyReminderBanner from "@/components/DailyReminderBanner";
 
 const getCategory = (id: string) => CATEGORIES.find((c) => c.id === id);
 
@@ -69,6 +71,7 @@ export default function Dashboard() {
   const { user } = useUser();
   const { settings, setSetting } = useSettings();
   useRecurringTransactions();
+  useDailyReminder();
   const { totalBalance } = useAccounts();
   const { transactions, income, expenses, savingsRate } = useMonthlyTransactions();
   const { budgets } = useBudgets();
@@ -120,6 +123,7 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
+      <DailyReminderBanner />
       <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

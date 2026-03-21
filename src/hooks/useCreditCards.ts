@@ -76,6 +76,24 @@ export function useCreditCards() {
     return db.accounts.delete(id);
   };
 
+  const payBill = async (creditCardId: number, amount: number, fromAccountId?: number) => {
+    const now = new Date();
+
+    // Increase credit card balance (reduce outstanding)
+    const cc = await db.accounts.get(creditCardId);
+    if (!cc) return;
+    const newBalance = cc.balance + amount; // balance is negative, adding makes it less negative
+    await db.accounts.update(creditCardId, { balance: Math.min(0, newBalance), updatedAt: now });
+
+    // Deduct from source bank account
+    if (fromAccountId) {
+      const bank = await db.accounts.get(fromAccountId);
+      if (bank) {
+        await db.accounts.update(fromAccountId, { balance: bank.balance - amount, updatedAt: now });
+      }
+    }
+  };
+
   return {
     creditCards: data,
     totalOutstanding,
@@ -84,5 +102,6 @@ export function useCreditCards() {
     addCreditCard,
     updateCreditCard,
     deleteCreditCard,
+    payBill,
   };
 }

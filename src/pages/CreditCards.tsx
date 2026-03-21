@@ -10,8 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useCreditCards } from "@/hooks/useCreditCards";
+import { useAccounts } from "@/hooks/useAccounts";
 import { useCurrency } from "@/hooks/useCurrency";
 import { validateAmount, validateRequired } from "@/lib/validation";
 import AppLayout from "@/components/AppLayout";
@@ -169,8 +171,114 @@ function EditCardDialog({ card, onUpdate }: {
   );
 }
 
+function PayBillDialog({ card, bankAccounts, onPay }: {
+  card: { id?: number; name: string; outstanding: number };
+  bankAccounts: { id?: number; name: string; balance: number }[];
+  onPay: (creditCardId: number, amount: number, fromAccountId?: number) => Promise<void>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [fromAccount, setFromAccount] = useState("");
+  const { format: fmt } = useCurrency();
+
+  const reset = () => { setAmount(""); setFromAccount(""); };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) reset(); }}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline" className="text-success border-success/30 hover:bg-success/10" disabled={card.outstanding === 0}>
+          <IndianRupee className="h-3.5 w-3.5 mr-1" /> Pay Bill
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader><DialogTitle>Pay {card.name} Bill</DialogTitle></DialogHeader>
+        <div className="space-y-4 pt-2">
+          <div className="rounded-lg bg-secondary/50 border p-3 flex justify-between items-center">
+            <span className="text-sm text-muted-foreground">Outstanding</span>
+            <span className="text-lg font-bold font-mono text-destructive">{fmt(card.outstanding)}</span>
+          </div>
+
+          <div>
+            <Label className="text-xs">Payment Amount (₹)</Label>
+            <Input
+              type="number"
+              className="font-mono"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder={String(card.outstanding)}
+            />
+            <div className="flex gap-2 mt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-xs"
+                onClick={() => setAmount(String(card.outstanding))}
+              >
+                Full Amount
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-xs"
+                onClick={() => setAmount(String(Math.round(card.outstanding * 0.05)))}
+              >
+                Minimum Due (5%)
+              </Button>
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-xs">Pay From</Label>
+            <Select value={fromAccount} onValueChange={setFromAccount}>
+              <SelectTrigger><SelectValue placeholder="Select bank account" /></SelectTrigger>
+              <SelectContent>
+                {bankAccounts.map((acc) => (
+                  <SelectItem key={acc.id} value={String(acc.id)}>
+                    {acc.name} — {fmt(acc.balance)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button
+            className="w-full gradient-primary border-0"
+            disabled={!amount || parseFloat(amount) <= 0}
+            onClick={async () => {
+              const payAmount = parseFloat(amount);
+              if (!payAmount || payAmount <= 0 || !card.id) return;
+              if (payAmount > card.outstanding) {
+                toast.error("Payment amount exceeds outstanding balance.");
+                return;
+              }
+              const bankId = fromAccount ? parseInt(fromAccount) : undefined;
+              if (bankId) {
+                const bank = bankAccounts.find((a) => a.id === bankId);
+                if (bank && payAmount > bank.balance) {
+                  toast.error(`Insufficient balance in ${bank.name}.`);
+                  return;
+                }
+              }
+              await onPay(card.id, payAmount, bankId);
+              reset();
+              setOpen(false);
+              toast.success(`Paid ${fmt(payAmount)} to ${card.name}!`);
+            }}
+          >
+            <Check className="h-4 w-4 mr-2" /> Confirm Payment
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function CreditCardsPage() {
-  const { creditCards, totalOutstanding, totalCreditLimit, totalAvailable, addCreditCard, updateCreditCard, deleteCreditCard } = useCreditCards();
+  const { creditCards, totalOutstanding, totalCreditLimit, totalAvailable, addCreditCard, updateCreditCard, deleteCreditCard, payBill } = useCreditCards();
+  const { accounts } = useAccounts();
+  const bankAccounts = accounts.filter((a) => a.type !== "credit_card");
   const { format: fmt } = useCurrency();
 
   const utilizationColor = (pct: number) =>
@@ -269,7 +377,8 @@ export default function CreditCardsPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
+                        <PayBillDialog card={card} bankAccounts={bankAccounts} onPay={payBill} />
                         <EditCardDialog card={card} onUpdate={updateCreditCard} />
                         <Button
                           size="icon"

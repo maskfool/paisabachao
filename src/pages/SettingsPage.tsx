@@ -436,9 +436,61 @@ export default function SettingsPage() {
         {/* Notifications */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2"><Bell className="h-4 w-4" /> Notifications</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2"><Bell className="h-4 w-4" /> Notifications & Reminders</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Daily Expense Reminder</p>
+                <p className="text-xs text-muted-foreground">Get notified to log your daily expenses</p>
+              </div>
+              <Switch
+                checked={settings.reminderEnabled === "true"}
+                onCheckedChange={async (v) => {
+                  if (v) {
+                    // Request notification permission
+                    if ("Notification" in window && Notification.permission !== "granted") {
+                      const result = await Notification.requestPermission();
+                      if (result !== "granted") {
+                        toast.error("Please allow notifications in your browser settings.");
+                        return;
+                      }
+                    }
+                  }
+                  setSetting("reminderEnabled", String(v));
+                  if (v) toast.success("Daily reminder enabled!");
+                }}
+              />
+            </div>
+            {settings.reminderEnabled === "true" && (
+              <div className="rounded-lg border p-3 space-y-3">
+                <div>
+                  <Label className="text-xs">Reminder Time</Label>
+                  <Input
+                    type="time"
+                    value={settings.reminderTime || "21:00"}
+                    onChange={(e) => setSetting("reminderTime", e.target.value)}
+                    className="w-40 font-mono"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    You'll get a push notification + in-app banner if no expenses are logged that day
+                  </p>
+                </div>
+                {"Notification" in window && (
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className={`h-2 w-2 rounded-full ${Notification.permission === "granted" ? "bg-success" : "bg-warning"}`} />
+                    <span className="text-muted-foreground">
+                      {Notification.permission === "granted"
+                        ? "Push notifications enabled"
+                        : Notification.permission === "denied"
+                        ? "Push notifications blocked — check browser settings"
+                        : "Push notifications not yet allowed"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+            <Separator />
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium">Budget Alerts</p>

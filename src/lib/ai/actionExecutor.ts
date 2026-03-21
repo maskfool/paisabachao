@@ -91,6 +91,39 @@ export async function executeAction(action: AIAction): Promise<string> {
         return action.confirmation || `Created ${d.category} budget: $${d.limit}/month`;
       }
 
+      case "pay_credit_card": {
+        const d = action.data as {
+          creditCardName: string;
+          amount: number;
+          fromAccountName?: string;
+        };
+
+        // Find credit card
+        const allAccounts = await db.accounts.toArray();
+        const cc = allAccounts.find(
+          (a) => a.type === "credit_card" && a.name.toLowerCase().includes(d.creditCardName.toLowerCase())
+        );
+        if (!cc) return `Credit card "${d.creditCardName}" not found.`;
+
+        const now = new Date();
+
+        // Increase CC balance (reduce outstanding)
+        const newCCBalance = cc.balance + d.amount;
+        await db.accounts.update(cc.id!, { balance: Math.min(0, newCCBalance), updatedAt: now });
+
+        // Deduct from source bank account if specified
+        if (d.fromAccountName) {
+          const bank = allAccounts.find(
+            (a) => a.type !== "credit_card" && a.name.toLowerCase().includes(d.fromAccountName!.toLowerCase())
+          );
+          if (bank) {
+            await db.accounts.update(bank.id!, { balance: bank.balance - d.amount, updatedAt: now });
+          }
+        }
+
+        return action.confirmation || `Paid ₹${d.amount.toLocaleString("en-IN")} to ${cc.name}`;
+      }
+
       default:
         return action.confirmation || "Action noted.";
     }

@@ -17,6 +17,36 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+// Handle notification click — open the app
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      // Focus existing window or open new one
+      for (const client of clients) {
+        if (client.url.includes("/dashboard") || client.url.includes("/chat")) {
+          return client.focus();
+        }
+      }
+      return self.clients.openWindow("/chat");
+    })
+  );
+});
+
+// Listen for messages from the app (schedule notifications)
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SHOW_REMINDER") {
+    self.registration.showNotification("PaisaBachao", {
+      body: event.data.body || "Don't forget to log today's expenses!",
+      icon: "/pwa-192x192.svg",
+      badge: "/pwa-192x192.svg",
+      tag: "daily-reminder",
+      renotify: true,
+      data: { url: "/chat" },
+    });
+  }
+});
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);

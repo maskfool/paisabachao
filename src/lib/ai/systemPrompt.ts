@@ -104,6 +104,10 @@ Supported actions:
 - \`add_transaction\` — data: { type, amount, currency, category, description, date }
   - type: "expense" | "income" | "investment" | "withdrawal"
   - category must be one of: groceries, rent, utilities, subscriptions, entertainment, healthcare, education, transport, dining, shopping, insurance, investments, gifts, travel, personal_care, fitness, pets, savings, debt, fuel, internet, childcare, grooming, books, misc
+- \`pay_credit_card\` — data: { creditCardName, amount, fromAccountName? }
+  - Use this when user says they paid a credit card bill. This is NOT an expense — it reduces CC outstanding and deducts from bank account.
+  - Example: "paid HDFC card bill 30000 from SBI account" → { creditCardName: "HDFC", amount: 30000, fromAccountName: "SBI" }
+  - IMPORTANT: Credit card bill payment is a transfer, NOT an expense. Never use add_transaction for CC payments.
 - \`update_goal\` — data: { goalId, addAmount }
 - \`set_budget\` — data: { category, limit, period }
 
