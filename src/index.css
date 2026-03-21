@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,23 +6,23 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 25% 10%;
+    --background: 160 30% 96%;
+    --foreground: 193 9% 19%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
+    --card-foreground: 193 9% 19%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
+    --popover-foreground: 193 9% 19%;
 
-    --primary: 152 60% 42%;
+    --primary: 182 41% 30%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 93%;
-    --secondary-foreground: 220 25% 10%;
+    --secondary: 170 30% 93%;
+    --secondary-foreground: 193 9% 19%;
 
-    --muted: 220 16% 93%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 170 20% 93%;
+    --muted-foreground: 216 15% 52%;
 
     --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
@@ -30,7 +30,7 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 60% 42%;
+    --success: 160 55% 38%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -39,22 +39,22 @@
     --info: 210 100% 52%;
     --info-foreground: 0 0% 100%;
 
-    --border: 220 16% 90%;
-    --input: 220 16% 90%;
-    --ring: 152 60% 42%;
+    --border: 170 16% 90%;
+    --input: 170 16% 90%;
+    --ring: 182 41% 30%;
 
-    --radius: 0.75rem;
+    --radius: 1.25rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 25% 10%;
-    --sidebar-primary: 152 60% 42%;
+    --sidebar-foreground: 193 9% 19%;
+    --sidebar-primary: 182 41% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 16% 93%;
-    --sidebar-accent-foreground: 220 25% 10%;
-    --sidebar-border: 220 16% 90%;
-    --sidebar-ring: 152 60% 42%;
+    --sidebar-accent: 170 30% 93%;
+    --sidebar-accent-foreground: 193 9% 19%;
+    --sidebar-border: 170 16% 90%;
+    --sidebar-ring: 182 41% 30%;
 
-    --chart-1: 152 60% 42%;
+    --chart-1: 182 41% 30%;
     --chart-2: 210 100% 52%;
     --chart-3: 38 92% 50%;
     --chart-4: 280 65% 60%;
@@ -62,53 +62,53 @@
   }
 
   .dark {
-    --background: 224 30% 7%;
-    --foreground: 210 20% 95%;
+    --background: 192 20% 8%;
+    --foreground: 170 15% 92%;
 
-    --card: 224 25% 10%;
-    --card-foreground: 210 20% 95%;
+    --card: 192 18% 11%;
+    --card-foreground: 170 15% 92%;
 
-    --popover: 224 25% 10%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 192 18% 11%;
+    --popover-foreground: 170 15% 92%;
 
-    --primary: 152 55% 48%;
-    --primary-foreground: 224 30% 7%;
+    --primary: 182 45% 42%;
+    --primary-foreground: 192 20% 8%;
 
-    --secondary: 224 20% 16%;
-    --secondary-foreground: 210 20% 95%;
+    --secondary: 192 15% 16%;
+    --secondary-foreground: 170 15% 92%;
 
-    --muted: 224 20% 16%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 192 15% 16%;
+    --muted-foreground: 200 12% 55%;
 
     --accent: 38 92% 50%;
-    --accent-foreground: 224 30% 7%;
+    --accent-foreground: 192 20% 8%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 55% 48%;
-    --success-foreground: 224 30% 7%;
+    --success: 160 50% 42%;
+    --success-foreground: 192 20% 8%;
 
     --warning: 38 92% 50%;
-    --warning-foreground: 224 30% 7%;
+    --warning-foreground: 192 20% 8%;
 
     --info: 210 100% 52%;
-    --info-foreground: 224 30% 7%;
+    --info-foreground: 192 20% 8%;
 
-    --border: 224 20% 18%;
-    --input: 224 20% 18%;
-    --ring: 152 55% 48%;
+    --border: 192 15% 18%;
+    --input: 192 15% 18%;
+    --ring: 182 45% 42%;
 
-    --sidebar-background: 224 25% 10%;
-    --sidebar-foreground: 210 20% 95%;
-    --sidebar-primary: 152 55% 48%;
-    --sidebar-primary-foreground: 224 30% 7%;
-    --sidebar-accent: 224 20% 16%;
-    --sidebar-accent-foreground: 210 20% 95%;
-    --sidebar-border: 224 20% 18%;
-    --sidebar-ring: 152 55% 48%;
+    --sidebar-background: 192 18% 11%;
+    --sidebar-foreground: 170 15% 92%;
+    --sidebar-primary: 182 45% 42%;
+    --sidebar-primary-foreground: 192 20% 8%;
+    --sidebar-accent: 192 15% 16%;
+    --sidebar-accent-foreground: 170 15% 92%;
+    --sidebar-border: 192 15% 18%;
+    --sidebar-ring: 182 45% 42%;
 
-    --chart-1: 152 55% 48%;
+    --chart-1: 182 45% 42%;
     --chart-2: 210 100% 60%;
     --chart-3: 38 92% 55%;
     --chart-4: 280 65% 65%;
@@ -122,16 +122,22 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
   .font-mono {
     font-family: 'JetBrains Mono', monospace;
+  }
+  /* Soft card shadows matching the mint theme */
+  .rounded-lg[class*="bg-card"],
+  [data-slot="card"],
+  .bg-card {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
   }
 }
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(152 60% 32%));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(182 50% 22%));
   }
   .gradient-card {
     background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card) / 0.8));

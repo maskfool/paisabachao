@@ -126,7 +126,7 @@ function CoinFollower() {
         transition: "opacity 0.3s",
         perspective: "600px",
         transformStyle: "preserve-3d",
-        filter: "drop-shadow(0 4px 8px rgba(255, 193, 7, 0.4))",
+        filter: "drop-shadow(0 4px 8px rgba(45, 106, 108, 0.35))",
       }}
     >
       <img
@@ -179,9 +179,9 @@ function useCanvasAnimation(canvasRef: React.RefObject<HTMLCanvasElement | null>
 
     // Floating orbs
     const orbs = [
-      { x: 0.2, y: 0.3, radius: 120, color: "62, 207, 142", speed: 0.0008, phase: 0 },
-      { x: 0.75, y: 0.6, radius: 80, color: "245, 158, 11", speed: 0.0012, phase: 2 },
-      { x: 0.5, y: 0.8, radius: 100, color: "62, 207, 142", speed: 0.001, phase: 4 },
+      { x: 0.2, y: 0.3, radius: 120, color: "45, 130, 132", speed: 0.0008, phase: 0 },
+      { x: 0.75, y: 0.6, radius: 80, color: "45, 160, 140", speed: 0.0012, phase: 2 },
+      { x: 0.5, y: 0.8, radius: 100, color: "45, 130, 132", speed: 0.001, phase: 4 },
     ];
 
     let time = 0;
@@ -216,7 +216,7 @@ function useCanvasAnimation(canvasRef: React.RefObject<HTMLCanvasElement | null>
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(62, 207, 142, ${p.opacity})`;
+        ctx.fillStyle = `rgba(45, 130, 132, ${p.opacity})`;
         ctx.fill();
       }
 
@@ -230,7 +230,7 @@ function useCanvasAnimation(canvasRef: React.RefObject<HTMLCanvasElement | null>
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(62, 207, 142, ${0.06 * (1 - dist / 100)})`;
+            ctx.strokeStyle = `rgba(45, 130, 132, ${0.06 * (1 - dist / 100)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -251,7 +251,7 @@ function useCanvasAnimation(canvasRef: React.RefObject<HTMLCanvasElement | null>
         ctx.save();
         ctx.translate(sx, sy);
         ctx.rotate(shape.rotation);
-        ctx.strokeStyle = "rgba(62, 207, 142, 0.15)";
+        ctx.strokeStyle = "rgba(45, 130, 132, 0.15)";
         ctx.lineWidth = 1;
 
         if (shape.type === "triangle") {
@@ -359,9 +359,9 @@ export default function Landing() {
 
         {/* Nav */}
         <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5">
-          <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-lg gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">₹</span>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl gradient-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-semibold text-sm">₹</span>
             </div>
             <span className="font-semibold text-lg tracking-tight">PaisaBachao</span>
           </div>
@@ -582,11 +582,11 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="group relative rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-5 hover:border-primary/30 transition-all duration-300"
+                className="group relative rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 hover:border-primary/30 transition-all duration-300"
               >
-                <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${f.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${f.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                 <div className="relative">
-                  <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                  <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                     <f.icon className="h-4 w-4 text-primary" />
                   </div>
                   <h3 className="font-semibold text-sm mb-1.5">{f.title}</h3>
@@ -650,7 +650,7 @@ export default function Landing() {
           transition={{ duration: 0.6 }}
           className="max-w-lg mx-auto text-center"
         >
-          <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center mx-auto mb-6">
+          <div className="h-12 w-12 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-6">
             <span className="text-primary-foreground font-bold text-lg">₹</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-3">

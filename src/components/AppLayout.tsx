@@ -54,22 +54,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       <motion.aside
         initial={false}
-        animate={{ width: collapsed ? 72 : 260 }}
-        className="hidden lg:flex flex-col border-r border-border bg-card"
+        animate={{ width: collapsed ? 80 : 272 }}
+        className="hidden lg:flex flex-col bg-card m-3 rounded-[2rem]"
+        style={{ boxShadow: "0 15px 35px rgba(0, 0, 0, 0.04)" }}
       >
-        <div className={cn("flex items-center gap-3 p-4 border-b border-border", collapsed && "justify-center")}>
-          <div className="h-9 w-9 rounded-lg gradient-primary flex items-center justify-center shrink-0">
-            <span className="text-primary-foreground font-bold text-sm">P</span>
+        <div className={cn("flex items-center gap-3 p-6 pb-4", collapsed && "justify-center p-4")}>
+          <div className="h-10 w-10 rounded-2xl gradient-primary flex items-center justify-center shrink-0">
+            <span className="text-primary-foreground font-semibold text-sm">P</span>
           </div>
           {!collapsed && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <h1 className="font-bold text-lg tracking-tight">PaisaBachao</h1>
+              <h1 className="font-semibold text-lg tracking-tight">PaisaBachao</h1>
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest">AI Finance</p>
             </motion.div>
           )}
         </div>
 
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 px-4 py-2 space-y-1">
           {NAV_ITEMS.map((item) => {
             const active = location.pathname === item.path;
             return (
@@ -77,9 +78,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <motion.div
                   whileHover={{ x: 2 }}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    "flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
                     active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary",
-                    collapsed && "justify-center px-2"
+                    collapsed && "justify-center px-3"
                   )}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
@@ -90,20 +91,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="p-3 border-t border-border space-y-1">
+        <div className="px-4 pb-6 pt-3 space-y-1">
           {/* User info */}
           {user && (
-            <div className={cn("flex items-center gap-3 px-3 py-2 mb-1", collapsed && "justify-center px-2")}>
+            <div className={cn("flex items-center gap-3 px-4 py-3 mb-1", collapsed && "justify-center px-3")}>
               {user.imageUrl ? (
-                <img src={user.imageUrl} alt="" className="h-7 w-7 rounded-full shrink-0" />
+                <img src={user.imageUrl} alt="" className="h-8 w-8 rounded-full shrink-0" />
               ) : (
-                <div className="h-7 w-7 rounded-full bg-primary/20 flex items-center justify-center shrink-0 text-xs font-bold text-primary">
+                <div className="h-8 w-8 rounded-full bg-primary/15 flex items-center justify-center shrink-0 text-xs font-semibold text-primary">
                   {userInitial}
                 </div>
               )}
               {!collapsed && (
                 <div className="min-w-0">
-                  <p className="text-xs font-medium truncate">{userName}</p>
+                  <p className="text-sm font-medium truncate">{userName}</p>
                   <p className="text-[10px] text-muted-foreground truncate">{user.emailAddresses?.[0]?.emailAddress}</p>
                 </div>
               )}
@@ -113,8 +114,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <button
             onClick={toggleDark}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary w-full transition-colors",
-              collapsed && "justify-center px-2"
+              "flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-secondary w-full transition-colors",
+              collapsed && "justify-center px-3"
             )}
           >
             {dark ? <Sun className="h-5 w-5 shrink-0" /> : <Moon className="h-5 w-5 shrink-0" />}
@@ -123,8 +124,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <button
             onClick={handleSignOut}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full transition-colors",
-              collapsed && "justify-center px-2"
+              "flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full transition-colors",
+              collapsed && "justify-center px-3"
             )}
           >
             <LogOut className="h-5 w-5 shrink-0" />
@@ -133,8 +134,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <button
             onClick={() => setCollapsed(!collapsed)}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary w-full transition-colors",
-              collapsed && "justify-center px-2"
+              "flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-secondary w-full transition-colors",
+              collapsed && "justify-center px-3"
             )}
           >
             <ChevronLeft className={cn("h-5 w-5 shrink-0 transition-transform", collapsed && "rotate-180")} />
@@ -145,12 +146,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Header + Overlay */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="lg:hidden flex items-center justify-between border-b border-border bg-card px-4 py-3">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xs">P</span>
+        <header className="lg:hidden flex items-center justify-between bg-card mx-3 mt-3 px-5 py-3 rounded-full" style={{ boxShadow: "0 15px 35px rgba(0, 0, 0, 0.04)" }}>
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl gradient-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-semibold text-xs">P</span>
             </div>
-            <span className="font-bold">PaisaBachao</span>
+            <span className="font-semibold">PaisaBachao</span>
           </div>
           <div className="flex items-center gap-2">
             {user?.imageUrl && (
@@ -177,7 +178,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 25 }}
-                className="fixed right-0 top-0 bottom-0 z-50 w-72 bg-card border-l border-border p-4 lg:hidden"
+                className="fixed right-0 top-0 bottom-0 z-50 w-72 bg-card p-5 lg:hidden rounded-l-[2rem]"
+                style={{ boxShadow: "0 15px 35px rgba(0, 0, 0, 0.06)" }}
               >
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="font-bold">Menu</h2>
@@ -188,11 +190,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
                 {/* Mobile user info */}
                 {user && (
-                  <div className="flex items-center gap-3 px-3 py-3 mb-4 rounded-lg bg-secondary/50">
+                  <div className="flex items-center gap-3 px-4 py-3 mb-4 rounded-2xl bg-secondary/50">
                     {user.imageUrl ? (
                       <img src={user.imageUrl} alt="" className="h-8 w-8 rounded-full" />
                     ) : (
-                      <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
+                      <div className="h-8 w-8 rounded-full bg-primary/15 flex items-center justify-center text-sm font-semibold text-primary">
                         {userInitial}
                       </div>
                     )}
@@ -209,7 +211,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     return (
                       <Link key={item.path} to={item.path} onClick={() => setSidebarOpen(false)}>
                         <div className={cn(
-                          "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors",
+                          "flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
                           active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                         )}>
                           <item.icon className="h-5 w-5" />
@@ -219,12 +221,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     );
                   })}
                 </nav>
-                <div className="mt-6 pt-4 border-t border-border space-y-1">
-                  <button onClick={toggleDark} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-secondary w-full">
+                <div className="mt-6 pt-4 space-y-1">
+                  <button onClick={toggleDark} className="flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-foreground hover:bg-secondary w-full">
                     {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                     <span>{dark ? "Light Mode" : "Dark Mode"}</span>
                   </button>
-                  <button onClick={handleSignOut} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full">
+                  <button onClick={handleSignOut} className="flex items-center gap-4 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full">
                     <LogOut className="h-5 w-5" />
                     <span>Sign Out</span>
                   </button>
