@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="28" fill="#0f172a"/>
-  <circle cx="96" cy="96" r="62" fill="url(#g)"/>
-  <defs><linearGradient id="g" x1="34" y1="34" x2="158" y2="158"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
-  <text x="96" y="108" text-anchor="middle" fill="#fff" font-size="72" font-weight="bold" font-family="system-ui,sans-serif">₹</text>
+  <rect width="192" height="192" rx="40" fill="#121417"/>
+  <defs>
+    <linearGradient id="g" x1="40" y1="30" x2="152" y2="162">
+      <stop stop-color="#3a96c9"/>
+      <stop offset="1" stop-color="#2d6a6c"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield shape -->
+  <path d="M96 28 L148 52 C148 52 152 112 96 164 C40 112 44 52 44 52 Z" fill="url(#g)" opacity="0.9"/>
+  <!-- Growth arrow -->
+  <polyline points="68,112 88,88 104,100 128,68" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="120,64 132,64 132,76" fill="#fff"/>
 </svg>

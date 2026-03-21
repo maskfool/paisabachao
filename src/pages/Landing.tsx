@@ -361,7 +361,7 @@ export default function Landing() {
         <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-5">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold text-sm">₹</span>
+              <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><path d="M16 2 L28 7 C28 7 29 20 16 30 C3 20 4 7 4 7 Z" fill="white" opacity="0.9"/><polyline points="10,20 13.5,15.5 17,17.5 23,11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/><polygon points="21,9.5 24,9.5 24,12.5" fill="currentColor" className="text-primary"/></svg>
             </div>
             <span className="font-semibold text-lg tracking-tight">PaisaBachao</span>
           </div>
@@ -651,7 +651,7 @@ export default function Landing() {
           className="max-w-lg mx-auto text-center"
         >
           <div className="h-12 w-12 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-6">
-            <span className="text-primary-foreground font-bold text-lg">₹</span>
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none"><path d="M16 2 L28 7 C28 7 29 20 16 30 C3 20 4 7 4 7 Z" fill="white" opacity="0.9"/><polyline points="10,20 13.5,15.5 17,17.5 23,11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/><polygon points="21,9.5 24,9.5 24,12.5" fill="currentColor" className="text-primary"/></svg>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
             Ready to save smarter?
@@ -675,7 +675,7 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-[10px]">₹</span>
+              <svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M16 2 L28 7 C28 7 29 20 16 30 C3 20 4 7 4 7 Z" fill="white" opacity="0.9"/></svg>
             </div>
             <span className="text-sm font-medium">PaisaBachao</span>
           </div>

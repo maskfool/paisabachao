@@ -70,7 +70,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         <div className={cn("flex items-center gap-3 px-6 pb-4", collapsed && "justify-center px-4")}>
           <div className="h-10 w-10 rounded-2xl gradient-primary flex items-center justify-center shrink-0">
-            <span className="text-primary-foreground font-semibold text-sm">P</span>
+            <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 2 L28 7 C28 7 29 20 16 30 C3 20 4 7 4 7 Z" fill="white" opacity="0.9"/>
+              <polyline points="10,20 13.5,15.5 17,17.5 23,11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/>
+              <polygon points="21,9.5 24,9.5 24,12.5" fill="currentColor" className="text-primary"/>
+            </svg>
           </div>
           {!collapsed && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -149,7 +153,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <header className="lg:hidden flex items-center justify-between bg-card mx-3 mt-3 px-5 py-3 rounded-full" style={{ boxShadow: "0 15px 35px rgba(0, 0, 0, 0.04)" }}>
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-xl gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-semibold text-xs">P</span>
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 2 L28 7 C28 7 29 20 16 30 C3 20 4 7 4 7 Z" fill="white" opacity="0.9"/>
+                <polyline points="10,20 13.5,15.5 17,17.5 23,11" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/>
+                <polygon points="21,9.5 24,9.5 24,12.5" fill="currentColor" className="text-primary"/>
+              </svg>
             </div>
             <span className="font-semibold">PaisaBachao</span>
           </div>
